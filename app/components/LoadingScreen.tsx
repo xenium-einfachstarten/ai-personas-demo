@@ -7,6 +7,7 @@ interface LoadingScreenProps {
 }
 
 export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
+  const [fadeIn, setFadeIn] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
 
   useEffect(() => {
@@ -24,23 +25,33 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
       }
     }
 
-    const timer = setTimeout(() => {
-      setIsVisible(false);
-      setTimeout(onComplete, 500); // Wait for fade-out animation
-    }, 4000); // Show for 4 seconds
+    // Trigger fade-in after mount
+    const fadeInTimer = setTimeout(() => {
+      setFadeIn(true);
+    }, 30);
 
-    return () => clearTimeout(timer);
+    // Start fade-out after 2.2 seconds
+    const fadeOutTimer = setTimeout(() => {
+      setIsVisible(false);
+      // Complete after fade-out animation
+      setTimeout(onComplete, 350);
+    }, 2200);
+
+    return () => {
+      clearTimeout(fadeInTimer);
+      clearTimeout(fadeOutTimer);
+    };
   }, [onComplete]);
 
   return (
-    <div
-      className={`fixed inset-0 z-50 flex items-center justify-center transition-opacity duration-500 overflow-hidden font-sans ${
-        isVisible ? 'opacity-100' : 'opacity-0'
-      }`}
-      style={{
-        background: 'radial-gradient(circle at center, #1e3a5f, #0a1525 80%)',
-      }}
-    >
+      <div
+        className={`fixed inset-0 z-50 flex items-center justify-center transition-all duration-300 overflow-hidden font-sans ${
+          fadeIn && isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
+        }`}
+        style={{
+          background: 'radial-gradient(circle at center, #0c1424, #02060e 80%)',
+        }}
+      >
       {/* Floating Orbs */}
       <div className="orb orb-1"></div>
       <div className="orb orb-2"></div>
