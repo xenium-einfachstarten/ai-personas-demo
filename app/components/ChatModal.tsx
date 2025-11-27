@@ -2,7 +2,8 @@
 
 import { useState, useRef, useEffect, type FormEvent, type CSSProperties } from 'react';
 import { Persona, Message } from '../types/persona';
-import { getPersonaGreeting, getPersonaResponse } from '../data/personas';
+import { getPersonaGreeting } from '../data/personas';
+import type { ChatCompletionResponse, ErrorResponse } from '../types/api';
 
 interface ChatModalProps {
   persona: Persona;
@@ -10,16 +11,10 @@ interface ChatModalProps {
 }
 
 export default function ChatModal({ persona, onClose }: ChatModalProps) {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: '1',
-      role: 'assistant',
-      content: getPersonaGreeting(persona.id),
-      timestamp: new Date(),
-    },
-  ]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [isLoadingGreeting, setIsLoadingGreeting] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -30,11 +25,66 @@ export default function ChatModal({ persona, onClose }: ChatModalProps) {
     scrollToBottom();
   }, [messages]);
 
+  useEffect(() => {
+    const fetchGreeting = async () => {
+      setIsLoadingGreeting(true);
+      setMessages([]);
+
+      try {
+        const response = await fetch('/api/chat', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            personaId: persona.id,
+            message: 'Hallo! Stelle dich kurz vor und begrüße mich.',
+            conversationHistory: [],
+          }),
+        });
+
+        if (response.ok) {
+          const data: ChatCompletionResponse = await response.json();
+          setMessages([
+            {
+              id: '1',
+              role: 'assistant',
+              content: data.response,
+              timestamp: new Date(),
+            },
+          ]);
+        } else {
+          setMessages([
+            {
+              id: '1',
+              role: 'assistant',
+              content: getPersonaGreeting(persona.id),
+              timestamp: new Date(),
+            },
+          ]);
+        }
+      } catch (error) {
+        console.error('Error fetching greeting:', error);
+        setMessages([
+          {
+            id: '1',
+            role: 'assistant',
+            content: getPersonaGreeting(persona.id),
+            timestamp: new Date(),
+          },
+        ]);
+      } finally {
+        setIsLoadingGreeting(false);
+      }
+    };
+
+    fetchGreeting();
+  }, [persona.id]);
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (!input.trim()) return;
+    if (!input.trim() || isLoadingGreeting) return;
 
-    // Add user message
     const userMessage: Message = {
       id: Date.now().toString(),
       role: 'user',
@@ -46,18 +96,55 @@ export default function ChatModal({ persona, onClose }: ChatModalProps) {
     setInput('');
     setIsTyping(true);
 
-    // Simulate typing delay
-    setTimeout(() => {
-      const response = getPersonaResponse(persona.id, input);
+    try {
+      const conversationHistory = messages
+        .slice(1)
+        .map((msg) => ({
+          role: msg.role,
+          content: msg.content,
+        }));
+
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          personaId: persona.id,
+          message: input,
+          conversationHistory,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData: ErrorResponse = await response.json();
+        throw new Error(errorData.error || 'API Fehler');
+      }
+
+      const data: ChatCompletionResponse = await response.json();
+
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
-        content: response,
+        content: data.response,
         timestamp: new Date(),
       };
+
       setMessages((prev) => [...prev, assistantMessage]);
+    } catch (error) {
+      console.error('Chat Error:', error);
+
+      const errorMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        role: 'assistant',
+        content: 'Entschuldigung, es gab einen Fehler bei der Kommunikation. Bitte versuche es erneut.',
+        timestamp: new Date(),
+      };
+
+      setMessages((prev) => [...prev, errorMessage]);
+    } finally {
       setIsTyping(false);
-    }, 1000);
+    }
   };
 
   return (
@@ -113,7 +200,22 @@ export default function ChatModal({ persona, onClose }: ChatModalProps) {
               </div>
             </div>
           ))}
-          
+
+          {isLoadingGreeting && (
+            <div className="flex justify-start">
+              <div
+                className="max-w-[70%] rounded-2xl px-4 py-2 glass-dark text-white border"
+                style={{ borderColor: `${persona.color}40` }}
+              >
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+                  <div className="w-2 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+                  <div className="w-2 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+                </div>
+              </div>
+            </div>
+          )}
+
           {isTyping && (
             <div className="flex justify-start">
               <div className="glass-dark rounded-2xl px-4 py-3 border" style={{ borderColor: `${persona.color}40` }}>
@@ -125,7 +227,7 @@ export default function ChatModal({ persona, onClose }: ChatModalProps) {
               </div>
             </div>
           )}
-          
+
           <div ref={messagesEndRef} />
         </div>
 
@@ -138,12 +240,12 @@ export default function ChatModal({ persona, onClose }: ChatModalProps) {
               onChange={(e) => setInput(e.target.value)}
               placeholder="Nachricht eingeben..."
               className="flex-1 px-4 py-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:border-transparent transition-all"
-              style={{ '--tw-ring-color': persona.color } as CSSProperties}
-              disabled={isTyping}
+              style={{ '--tw-ring-color': persona.color } as CSSProperties }
+              disabled={isTyping || isLoadingGreeting}
             />
             <button
               type="submit"
-              disabled={!input.trim() || isTyping}
+              disabled={!input.trim() || isTyping || isLoadingGreeting}
               className="px-6 py-3 rounded-xl font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               style={{
                 backgroundColor: persona.color,
