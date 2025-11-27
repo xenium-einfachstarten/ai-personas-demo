@@ -9,6 +9,7 @@ export default function LoginForm() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [showLoadingScreen, setShowLoadingScreen] = useState(false);
+  const [isTransitioning, setIsTransitioning] = useState(false);
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -26,7 +27,13 @@ export default function LoginForm() {
       const data = await res.json();
 
       if (res.ok) {
-        setShowLoadingScreen(true);
+        // Start transition out of login screen
+        setIsTransitioning(true);
+
+        // Wait for fade-out animation, then show loading screen
+        setTimeout(() => {
+          setShowLoadingScreen(true);
+        }, 250); // Match transition duration
       } else {
         setError(data.error || 'Falsches Passwort');
         setLoading(false);
@@ -46,7 +53,11 @@ export default function LoginForm() {
     <>
       {showLoadingScreen && <LoadingScreen onComplete={handleLoadingComplete} />}
 
-      <div className="min-h-screen relative overflow-hidden flex items-center justify-center p-4">
+      <div
+        className={`min-h-screen relative overflow-hidden flex items-center justify-center p-4 transition-all duration-300 ${
+          isTransitioning ? 'opacity-0 scale-95' : 'opacity-100 scale-100'
+        }`}
+      >
         {/* Xenium Gradient Background */}
         <div className="absolute inset-0 bg-gradient-to-br from-xenium-navy via-xenium-teal to-xenium-purple animate-gradient"></div>
 
