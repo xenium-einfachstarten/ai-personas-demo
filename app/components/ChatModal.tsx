@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect, type FormEvent, type CSSProperties } from 'react';
 import { Persona, Message } from '../types/persona';
-import { getPersonaResponse } from '../data/personas';
+import { getPersonaGreeting, getPersonaResponse } from '../data/personas';
 
 interface ChatModalProps {
   persona: Persona;
@@ -14,7 +14,7 @@ export default function ChatModal({ persona, onClose }: ChatModalProps) {
     {
       id: '1',
       role: 'assistant',
-      content: `Hallo! Ich bin ${persona.name}. Wie kann ich dir helfen?`,
+      content: getPersonaGreeting(persona.id),
       timestamp: new Date(),
     },
   ]);
