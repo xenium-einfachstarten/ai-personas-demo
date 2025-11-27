@@ -1,19 +1,22 @@
-export default function AvatarCarousel() {
-  const avatars = [
-    'https://i.pravatar.cc/600?img=3',
-    'https://i.pravatar.cc/600?img=5',
-    'https://i.pravatar.cc/600?img=7',
-    'https://i.pravatar.cc/600?img=8',
-    'https://i.pravatar.cc/600?img=9',
-    'https://i.pravatar.cc/600?img=10',
-    'https://i.pravatar.cc/600?img=19',
-  ];
+'use client';
 
+import { personas } from '../data/personas';
+
+interface AvatarCarouselProps {
+  onPersonaClick: (personaId: number) => void;
+}
+
+export default function AvatarCarousel({ onPersonaClick }: AvatarCarouselProps) {
   return (
     <div className="avatar-container">
-      {avatars.map((src, index) => (
-        <div key={index} className="avatar-item">
-          <img src={src} alt={`Avatar ${index + 1}`} />
+      {personas.map((persona) => (
+        <div 
+          key={persona.id} 
+          className="avatar-item"
+          onClick={() => onPersonaClick(persona.id)}
+          style={{ cursor: 'pointer' }}
+        >
+          <img src={persona.avatar} alt={persona.name} />
         </div>
       ))}
     </div>
