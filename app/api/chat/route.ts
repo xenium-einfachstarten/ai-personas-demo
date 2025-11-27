@@ -61,10 +61,10 @@ Wichtig:
 
     // Call OpenAI API
     const completion = await openai.chat.completions.create({
-      model: 'gpt-4',
+      model: 'gpt-4o-mini',
       messages: messages,
       temperature: 0.8, // Higher temperature for more personality variation
-      max_tokens: 500,
+      max_tokens: 300,
     });
 
     const responseContent = completion.choices[0]?.message?.content;
