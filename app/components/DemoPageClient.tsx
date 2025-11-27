@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import LogoutButton from './LogoutButton';
 import AvatarCarousel from './AvatarCarousel';
 import ChatModal from './ChatModal';
@@ -8,11 +8,25 @@ import { personas } from '../data/personas';
 
 export default function DemoPageClient() {
   const [selectedPersonaId, setSelectedPersonaId] = useState<number | null>(null);
+  const [isVisible, setIsVisible] = useState(false);
 
   const selectedPersona = personas.find((p) => p.id === selectedPersonaId);
 
+  useEffect(() => {
+    // Trigger fade-in after component mounts
+    const timer = setTimeout(() => {
+      setIsVisible(true);
+    }, 100);
+
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
-    <main className="min-h-screen relative overflow-hidden flex items-center justify-center p-4">
+    <main
+      className={`min-h-screen relative overflow-hidden flex items-center justify-center p-4 transition-all duration-700 ${
+        isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
+      }`}
+    >
       {/* Xenium Background */}
       <div className="absolute inset-0 bg-gradient-to-br from-xenium-navy via-xenium-teal to-xenium-purple animate-gradient"></div>
       
