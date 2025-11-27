@@ -8,6 +8,15 @@ export default {
   ],
   theme: {
     extend: {
+      colors: {
+        xenium: {
+          navy: "#1e3a5f",
+          teal: "#008b8b",
+          lime: "#d4ff00",
+          mint: "#a8e6cf",
+          purple: "#8b7ab8",
+        },
+      },
       animation: {
         gradient: "gradient 8s linear infinite",
         float: "float 6s ease-in-out infinite",
@@ -35,11 +44,11 @@ export default {
         glow: {
           "0%": {
             "box-shadow":
-              "0 0 20px rgba(139, 92, 246, 0.3), 0 0 40px rgba(59, 130, 246, 0.2)",
+              "0 0 20px rgba(0, 139, 139, 0.3), 0 0 40px rgba(168, 230, 207, 0.2)",
           },
           "100%": {
             "box-shadow":
-              "0 0 30px rgba(139, 92, 246, 0.5), 0 0 60px rgba(59, 130, 246, 0.3)",
+              "0 0 30px rgba(0, 139, 139, 0.5), 0 0 60px rgba(168, 230, 207, 0.3)",
           },
         },
       },
