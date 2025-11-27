@@ -23,3 +23,168 @@
     border: 1px solid rgba(168, 230, 207, 0.1);
   }
 }
+
+/* Avatar Carousel Animations */
+@keyframes spin-out {
+  from {
+    rotate: 0;
+  }
+  to {
+    rotate: 360deg;
+  }
+}
+
+@keyframes spin-in {
+  from {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.avatar-container {
+  --size: 120px;
+  --offset: 30px;
+  --duration: 30s;
+  --primary-color: #008b8b;
+  --secondary-color: #d4ff00;
+  
+  position: relative;
+  aspect-ratio: 1 / 1;
+  pointer-events: none;
+  display: inline-grid;
+  border-radius: 9999px;
+  width: calc(var(--size) * 3);
+  border: 6px solid var(--primary-color);
+  transition: box-shadow 0.3s ease-in-out;
+  animation: spin-out var(--duration) linear infinite;
+}
+
+.avatar-container .avatar-item {
+  z-index: 1;
+  display: flex;
+  grid-area: 1 / 1;
+  width: var(--size);
+  aspect-ratio: 1 / 1;
+  pointer-events: auto;
+  border-radius: 9999px;
+  animation: spin-in var(--duration) linear infinite reverse;
+}
+
+.avatar-container .avatar-item:nth-child(1) {
+  offset: circle(calc(var(--size) / (2 * sin(0.5turn / 7)) + var(--offset))) calc(100% * 0 / 7) 0deg;
+}
+
+.avatar-container .avatar-item:nth-child(2) {
+  offset: circle(calc(var(--size) / (2 * sin(0.5turn / 7)) + var(--offset))) calc(100% * 1 / 7) 0deg;
+}
+
+.avatar-container .avatar-item:nth-child(3) {
+  offset: circle(calc(var(--size) / (2 * sin(0.5turn / 7)) + var(--offset))) calc(100% * 2 / 7) 0deg;
+}
+
+.avatar-container .avatar-item:nth-child(4) {
+  offset: circle(calc(var(--size) / (2 * sin(0.5turn / 7)) + var(--offset))) calc(100% * 3 / 7) 0deg;
+}
+
+.avatar-container .avatar-item:nth-child(5) {
+  offset: circle(calc(var(--size) / (2 * sin(0.5turn / 7)) + var(--offset))) calc(100% * 4 / 7) 0deg;
+}
+
+.avatar-container .avatar-item:nth-child(6) {
+  offset: circle(calc(var(--size) / (2 * sin(0.5turn / 7)) + var(--offset))) calc(100% * 5 / 7) 0deg;
+}
+
+.avatar-container .avatar-item:nth-child(7) {
+  offset: circle(calc(var(--size) / (2 * sin(0.5turn / 7)) + var(--offset))) calc(100% * 6 / 7) 0deg;
+}
+
+.avatar-container .avatar-item img {
+  width: inherit;
+  height: inherit;
+  pointer-events: auto;
+  border-radius: 9999px;
+  border: 3px solid var(--primary-color);
+  transition-duration: 0.3s;
+  transition-timing-function: ease-in-out;
+  transition-property: box-shadow, scale, border;
+}
+
+.avatar-container .avatar-item:hover {
+  z-index: 2;
+}
+
+.avatar-container .avatar-item:hover img {
+  scale: 1.5;
+  border-color: var(--secondary-color);
+  box-shadow: 0 0 1rem var(--secondary-color);
+}
+
+.avatar-container .avatar-item:hover ~ .avatar-item img {
+  scale: 0.6;
+}
+
+.avatar-container:has(.avatar-item:hover) .avatar-item:not(:hover) img {
+  scale: 0.6;
+}
+
+.avatar-container::before {
+  content: "";
+  z-index: -1;
+  border: inherit;
+  position: absolute;
+  width: var(--size);
+  aspect-ratio: 1 / 1;
+  border-radius: 0.25rem;
+  inset-block-start: 50%;
+  inset-inline-start: 50%;
+  transform: translate(-50%, -50%);
+  transition-duration: 0.3s;
+  transition-timing-function: ease-in-out;
+  transition-property: transform, border-radius, border, box-shadow;
+}
+
+.avatar-container::after {
+  content: "";
+  z-index: -1;
+  inset: -6px;
+  width: inherit;
+  height: inherit;
+  border: inherit;
+  position: absolute;
+  border-radius: inherit;
+  animation: spin-in var(--duration) linear infinite reverse;
+  transition-duration: 0.3s;
+  transition-timing-function: ease-in-out;
+  transition-property: scale, border-radius, border, box-shadow;
+}
+
+.avatar-container:has(.avatar-item:hover) {
+  animation-play-state: paused;
+  box-shadow: 0 0 60px 12px var(--primary-color) inset,
+    0 0 21px 15px rgba(1, 12, 21, 0.8);
+}
+
+.avatar-container:has(.avatar-item:hover) .avatar-item {
+  animation-play-state: paused;
+}
+
+.avatar-container:has(.avatar-item:hover)::before {
+  --scale: 4;
+  --translate: calc(-50% / var(--scale));
+  border-width: 2px;
+  border-radius: inherit;
+  border-color: var(--secondary-color);
+  transform: scale(var(--scale)) translate(var(--translate), var(--translate));
+  box-shadow: 0 0 15px var(--secondary-color),
+    0 0 15px var(--primary-color) inset;
+}
+
+.avatar-container:has(.avatar-item:hover)::after {
+  scale: 0.3;
+  border-width: 18px;
+  border-radius: 3rem;
+  border-color: var(--secondary-color);
+  box-shadow: 0 0 var(--size) var(--secondary-color) inset;
+}
