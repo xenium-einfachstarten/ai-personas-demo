@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
     }
 
     if (password === correctPassword) {
-      const cookieStore = cookies();
+      const cookieStore = await cookies();
 
       // Session Cookie setzen (7 Tage gültig)
       cookieStore.set('auth_token', 'authenticated', {

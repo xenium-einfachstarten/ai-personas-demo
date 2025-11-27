@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation';
 import LogoutButton from '../components/LogoutButton';
 
 export default async function DemoPage() {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const authToken = cookieStore.get('auth_token');
 
   if (!authToken) {
