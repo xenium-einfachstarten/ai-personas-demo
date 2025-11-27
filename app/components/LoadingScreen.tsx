@@ -10,9 +10,23 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
   const [isVisible, setIsVisible] = useState(true);
 
   useEffect(() => {
+    // CSS Custom Property Registrierung für performante Animationen
+    if (typeof window !== 'undefined' && window.CSS && CSS.registerProperty) {
+      try {
+        CSS.registerProperty({
+          name: '--turn',
+          syntax: '<angle>',
+          inherits: false,
+          initialValue: '0deg'
+        });
+      } catch (e) {
+        // Property already registered or not supported
+      }
+    }
+
     const timer = setTimeout(() => {
       setIsVisible(false);
-      setTimeout(onComplete, 300); // Wait for fade-out animation
+      setTimeout(onComplete, 500); // Wait for fade-out animation
     }, 4000); // Show for 4 seconds
 
     return () => clearTimeout(timer);
@@ -20,199 +34,217 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
 
   return (
     <div
-      className={`fixed inset-0 z-50 flex items-center justify-center transition-opacity duration-300 ${
+      className={`fixed inset-0 z-50 flex items-center justify-center transition-opacity duration-500 overflow-hidden font-sans ${
         isVisible ? 'opacity-100' : 'opacity-0'
       }`}
       style={{
-        background: 'linear-gradient(135deg, #1e3a5f 0%, #008b8b 50%, #8b7ab8 100%)',
+        background: 'radial-gradient(circle at center, #1e3a5f, #0a1525 80%)',
       }}
     >
-      <div className="text-center">
-        <svg
-          className="lego-loader"
-          viewBox="0 0 420 420"
-          width="300px"
-          height="300px"
-          role="img"
-          aria-label="Loading animation"
-        >
-          <defs>
-            <symbol id="brick">
-              <polygon fill="var(--brick-top)" points="70 0,140 39,70 125,0 39" />
-              <polygon fill="var(--brick-left)" points="0 39,70 78,71 78,70 125,0 86" />
-              <polygon points="70 78,140 39,140 86,70 125" />
-              <use href="#studs" />
-            </symbol>
-            <symbol id="stud">
-              <rect y="1" rx="14" ry="8" width="28" height="24" />
-              <ellipse fill="var(--brick-top)" cx="14" cy="8" rx="14" ry="8" />
-            </symbol>
-            <symbol id="studs">
-              <use href="#stud" transform="translate(21, 22)" />
-              <use href="#stud" transform="translate(56, 3)" />
-              <use href="#stud" transform="translate(56, 41)" />
-              <use href="#stud" transform="translate(91, 22)" />
-            </symbol>
-          </defs>
-          <g transform="translate(140, 218)">
-            <g className="lego-brick-group">
-              <g className="lego-brick-group lego-brick-group--1">
-                <use className="lego-brick lego-brick--teal" href="#brick" />
-                <g className="lego-brick-group lego-brick-group--2" transform="translate(0, -47)">
-                  <use className="lego-brick lego-brick--mint" href="#brick" />
-                  <g className="lego-brick-group lego-brick-group--3" transform="translate(0, -47)">
-                    <use className="lego-brick lego-brick--lime" href="#brick" />
-                    <g className="lego-brick-group lego-brick-group--4" transform="translate(0, -47)">
-                      <use className="lego-brick lego-brick--purple" href="#brick" />
-                    </g>
-                  </g>
-                </g>
-              </g>
-            </g>
-          </g>
-        </svg>
-        <p className="mt-6 text-xenium-lime text-xl font-semibold tracking-wide">
-          Loading AI Personas...
-        </p>
+      {/* Floating Orbs */}
+      <div className="orb orb-1"></div>
+      <div className="orb orb-2"></div>
+
+      <div className="scene">
+        <div className="rubiks-cube">
+          {/* UNTEN (y=1) */}
+          <div className="cubie" style={{'--x': -1, '--y': 1, '--z': -1} as any}><div className="face front"></div><div className="face back"></div><div className="face right"></div><div className="face left"></div><div className="face top"></div><div className="face bottom"></div></div>
+          <div className="cubie" style={{'--x':  0, '--y': 1, '--z': -1} as any}><div className="face front"></div><div className="face back"></div><div className="face right"></div><div className="face left"></div><div className="face top"></div><div className="face bottom"></div></div>
+          <div className="cubie" style={{'--x':  1, '--y': 1, '--z': -1} as any}><div className="face front"></div><div className="face back"></div><div className="face right"></div><div className="face left"></div><div className="face top"></div><div className="face bottom"></div></div>
+          <div className="cubie" style={{'--x': -1, '--y': 1, '--z':  0} as any}><div className="face front"></div><div className="face back"></div><div className="face right"></div><div className="face left"></div><div className="face top"></div><div className="face bottom"></div></div>
+          <div className="cubie" style={{'--x':  0, '--y': 1, '--z':  0} as any}><div className="face front"></div><div className="face back"></div><div className="face right"></div><div className="face left"></div><div className="face top"></div><div className="face bottom"></div></div>
+          <div className="cubie" style={{'--x':  1, '--y': 1, '--z':  0} as any}><div className="face front"></div><div className="face back"></div><div className="face right"></div><div className="face left"></div><div className="face top"></div><div className="face bottom"></div></div>
+          <div className="cubie" style={{'--x': -1, '--y': 1, '--z':  1} as any}><div className="face front"></div><div className="face back"></div><div className="face right"></div><div className="face left"></div><div className="face top"></div><div className="face bottom"></div></div>
+          <div className="cubie" style={{'--x':  0, '--y': 1, '--z':  1} as any}><div className="face front"></div><div className="face back"></div><div className="face right"></div><div className="face left"></div><div className="face top"></div><div className="face bottom"></div></div>
+          <div className="cubie" style={{'--x':  1, '--y': 1, '--z':  1} as any}><div className="face front"></div><div className="face back"></div><div className="face right"></div><div className="face left"></div><div className="face top"></div><div className="face bottom"></div></div>
+
+          {/* MITTE (y=0) */}
+          <div className="cubie" style={{'--x': -1, '--y': 0, '--z': -1} as any}><div className="face front"></div><div className="face back"></div><div className="face right"></div><div className="face left"></div><div className="face top"></div><div className="face bottom"></div></div>
+          <div className="cubie" style={{'--x':  0, '--y': 0, '--z': -1} as any}><div className="face front"></div><div className="face back"></div><div className="face right"></div><div className="face left"></div><div className="face top"></div><div className="face bottom"></div></div>
+          <div className="cubie" style={{'--x':  1, '--y': 0, '--z': -1} as any}><div className="face front"></div><div className="face back"></div><div className="face right"></div><div className="face left"></div><div className="face top"></div><div className="face bottom"></div></div>
+          <div className="cubie" style={{'--x': -1, '--y': 0, '--z':  0} as any}><div className="face front"></div><div className="face back"></div><div className="face right"></div><div className="face left"></div><div className="face top"></div><div className="face bottom"></div></div>
+          <div className="cubie" style={{'--x':  0, '--y': 0, '--z':  0} as any}><div className="face front"></div><div className="face back"></div><div className="face right"></div><div className="face left"></div><div className="face top"></div><div className="face bottom"></div></div>
+          <div className="cubie" style={{'--x':  1, '--y': 0, '--z':  0} as any}><div className="face front"></div><div className="face back"></div><div className="face right"></div><div className="face left"></div><div className="face top"></div><div className="face bottom"></div></div>
+          <div className="cubie" style={{'--x': -1, '--y': 0, '--z':  1} as any}><div className="face front"></div><div className="face back"></div><div className="face right"></div><div className="face left"></div><div className="face top"></div><div className="face bottom"></div></div>
+          <div className="cubie" style={{'--x':  0, '--y': 0, '--z':  1} as any}><div className="face front"></div><div className="face back"></div><div className="face right"></div><div className="face left"></div><div className="face top"></div><div className="face bottom"></div></div>
+          <div className="cubie" style={{'--x':  1, '--y': 0, '--z':  1} as any}><div className="face front"></div><div className="face back"></div><div className="face right"></div><div className="face left"></div><div className="face top"></div><div className="face bottom"></div></div>
+
+          {/* OBEN (y=-1) */}
+          <div className="cubie" style={{'--x': -1, '--y': -1, '--z': -1} as any}><div className="face front"></div><div className="face back"></div><div className="face right"></div><div className="face left"></div><div className="face top"></div><div className="face bottom"></div></div>
+          <div className="cubie" style={{'--x':  0, '--y': -1, '--z': -1} as any}><div className="face front"></div><div className="face back"></div><div className="face right"></div><div className="face left"></div><div className="face top"></div><div className="face bottom"></div></div>
+          <div className="cubie" style={{'--x':  1, '--y': -1, '--z': -1} as any}><div className="face front"></div><div className="face back"></div><div className="face right"></div><div className="face left"></div><div className="face top"></div><div className="face bottom"></div></div>
+          <div className="cubie" style={{'--x': -1, '--y': -1, '--z':  0} as any}><div className="face front"></div><div className="face back"></div><div className="face right"></div><div className="face left"></div><div className="face top"></div><div className="face bottom"></div></div>
+          <div className="cubie" style={{'--x':  0, '--y': -1, '--z':  0} as any}><div className="face front"></div><div className="face back"></div><div className="face right"></div><div className="face left"></div><div className="face top"></div><div className="face bottom"></div></div>
+          <div className="cubie" style={{'--x':  1, '--y': -1, '--z':  0} as any}><div className="face front"></div><div className="face back"></div><div className="face right"></div><div className="face left"></div><div className="face top"></div><div className="face bottom"></div></div>
+          <div className="cubie" style={{'--x': -1, '--y': -1, '--z':  1} as any}><div className="face front"></div><div className="face back"></div><div className="face right"></div><div className="face left"></div><div className="face top"></div><div className="face bottom"></div></div>
+          <div className="cubie" style={{'--x':  0, '--y': -1, '--z':  1} as any}><div className="face front"></div><div className="face back"></div><div className="face right"></div><div className="face left"></div><div className="face top"></div><div className="face bottom"></div></div>
+          <div className="cubie" style={{'--x':  1, '--y': -1, '--z':  1} as any}><div className="face front"></div><div className="face back"></div><div className="face right"></div><div className="face left"></div><div className="face top"></div><div className="face bottom"></div></div>
+        </div>
+        
+        <div className="loading-text">System wird geladen</div>
       </div>
 
       <style jsx>{`
-        .lego-loader {
-          display: block;
-          margin: 0 auto;
+        /* Palette Configuration */
+        .scene {
+          --x-navy: #1e3a5f;
+          --x-teal: #008b8b;
+          --x-purple: #8b7ab8;
+          --x-mint: #a8e6cf;
+          --x-lime: #d4ff00;
+          --x-dark: #0f1e33;
+
+          --size: 45px;
+          --gap: 2px;
+          --duration: 2.5s;
+
+          --neon-top:    var(--x-lime);
+          --neon-front:  var(--x-purple);
+          --neon-right:  var(--x-teal);
+          --neon-back:   var(--x-teal);
+          --neon-left:   var(--x-mint);
+          --neon-bottom: var(--x-navy);
         }
 
-        .lego-brick--teal {
-          --brick-left: #006666;
-          --brick-top: #00a3a3;
-          fill: #008b8b;
+        /* Orbs */
+        .orb {
+          position: absolute;
+          border-radius: 50%;
+          opacity: 0.15;
+          z-index: -1;
+          filter: blur(40px);
+          animation: floatOrb 15s ease-in-out infinite alternate;
+        }
+        
+        .orb-1 {
+          width: 400px; height: 400px;
+          background: #008b8b; /* Teal */
+          top: -10%; left: -10%;
+        }
+        
+        .orb-2 {
+          width: 500px; height: 500px;
+          background: #8b7ab8; /* Purple */
+          bottom: -10%; right: -10%;
+          animation-delay: -5s;
         }
 
-        .lego-brick--mint {
-          --brick-left: #7dd1b8;
-          --brick-top: #c1f0e0;
-          fill: #a8e6cf;
+        @keyframes floatOrb {
+          0% { transform: translate(0, 0); }
+          100% { transform: translate(30px, 50px); }
         }
 
-        .lego-brick--lime {
-          --brick-left: #b8d900;
-          --brick-top: #e6ff66;
-          fill: #d4ff00;
+        /* Scene & Cube */
+        .scene {
+          position: relative;
+          width: calc(var(--size) * 4);
+          height: calc(var(--size) * 4);
+          perspective: 1200px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
         }
 
-        .lego-brick--purple {
-          --brick-left: #6a5a8a;
-          --brick-top: #a89fc8;
-          fill: #8b7ab8;
+        .rubiks-cube {
+          position: relative;
+          width: var(--size);
+          height: var(--size);
+          transform-style: preserve-3d;
+          animation: presentCube 8s infinite linear;
         }
 
-        .lego-brick-group {
-          animation: brick-bounce 6s cubic-bezier(0.37, 0, 0.63, 1) infinite;
+        .cubie {
+          position: absolute;
+          width: var(--size);
+          height: var(--size);
+          top: 0; left: 0;
+          transform-style: preserve-3d;
+          transform: 
+            rotateY(var(--turn, 0deg))
+            translate3d(
+              calc(var(--x) * (var(--size) + var(--gap))), 
+              calc(var(--y) * (var(--size) + var(--gap))), 
+              calc(var(--z) * (var(--size) + var(--gap)))
+            );
         }
 
-        .lego-brick-group--1 {
-          animation-name: brick-move-1;
+        /* Faces */
+        .face {
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          box-sizing: border-box;
+          backface-visibility: hidden;
+          border-radius: 3px;
+          background-color: #0f1e33;
+          border: 1px solid rgba(255,255,255,0.1);
         }
 
-        .lego-brick-group--2 {
-          animation-name: brick-move-2;
+        .face::after {
+          content: '';
+          position: absolute;
+          top: 4px; left: 4px; right: 4px; bottom: 4px;
+          border-radius: 2px;
+          background-color: var(--neon-color);
+          box-shadow: 0 0 8px var(--neon-color);
+          opacity: 0.9;
         }
 
-        .lego-brick-group--3 {
-          animation-name: brick-move-3;
+        /* Face Assignments */
+        .face.front  { transform: translateZ(calc(var(--size) / 2)); --neon-color: var(--neon-front); }
+        .face.back   { transform: rotateY(180deg) translateZ(calc(var(--size) / 2)); --neon-color: var(--neon-back); }
+        .face.right  { transform: rotateY(90deg) translateZ(calc(var(--size) / 2)); --neon-color: var(--neon-right); }
+        .face.left   { transform: rotateY(-90deg) translateZ(calc(var(--size) / 2)); --neon-color: var(--neon-left); }
+        .face.top    { transform: rotateX(90deg) translateZ(calc(var(--size) / 2)); --neon-color: var(--neon-top); }
+        .face.bottom { transform: rotateX(-90deg) translateZ(calc(var(--size) / 2)); --neon-color: var(--neon-bottom); }
+
+        /* Animation Selectors via Attribute */
+        :global(.cubie[style*="--y: -1"]) {
+          animation: turnLayerTop var(--duration) infinite ease-in-out;
+        }
+        :global(.cubie[style*="--y: 1"]) {
+          animation: turnLayerBottom var(--duration) infinite ease-in-out;
         }
 
-        .lego-brick-group--4 {
-          animation-name: brick-move-4;
+        @keyframes turnLayerTop {
+          0%, 15% { --turn: 0deg; }
+          40%, 60% { --turn: 90deg; }
+          85%, 100% { --turn: 0deg; }
+        }
+        @keyframes turnLayerBottom {
+          0%, 15% { --turn: 0deg; }
+          40%, 60% { --turn: -90deg; }
+          85%, 100% { --turn: 0deg; }
+        }
+        @keyframes presentCube {
+          0% { transform: rotateX(-25deg) rotateY(0deg); }
+          100% { transform: rotateX(-25deg) rotateY(360deg); }
         }
 
-        @keyframes brick-bounce {
-          from, 12%, 15%, 27%, 30%, 42%, 45%, 62%, 65%, 77%, 80%, 92%, 95%, to {
-            transform: translate(0, 0);
-          }
-          13.5%, 28.5%, 43.5%, 63.5%, 78.5%, 93.5% {
-            transform: translate(0, 6px);
-          }
+        /* Text */
+        .loading-text {
+          position: absolute;
+          bottom: -100px;
+          color: #a8e6cf; /* Mint */
+          font-family: 'Segoe UI', sans-serif;
+          font-weight: 400;
+          font-size: 1rem;
+          letter-spacing: 3px;
+          text-transform: uppercase;
         }
-
-        @keyframes brick-move-1 {
-          from, 4%, 92%, to {
-            transform: translate(0, 0);
-          }
-          12%, 19%, 77%, 84% {
-            transform: translate(17.5px, 10px);
-          }
-          27%, 34%, 62%, 69% {
-            transform: translate(35px, 20px);
-          }
-          42%, 54% {
-            transform: translate(52.5px, 30px);
-          }
+        
+        .loading-text::after {
+          content: '...';
+          animation: dots 2s infinite;
         }
-
-        @keyframes brick-move-2 {
-          from, 92%, to {
-            transform: translate(0, -47px);
-          }
-          4% {
-            transform: translate(0, -87px);
-          }
-          8% {
-            transform: translate(-35px, -87px);
-          }
-          12%, 80% {
-            transform: translate(-35px, -67px);
-          }
-          84% {
-            transform: translate(-35px, -107px);
-          }
-          88% {
-            transform: translate(0, -67px);
-          }
-        }
-
-        @keyframes brick-move-3 {
-          from, 15%, 77%, to {
-            transform: translate(0, -47px);
-          }
-          19% {
-            transform: translate(0, -87px);
-          }
-          23% {
-            transform: translate(-35px, -87px);
-          }
-          27%, 65% {
-            transform: translate(-35px, -67px);
-          }
-          69% {
-            transform: translate(-35px, -107px);
-          }
-          73% {
-            transform: translate(0, -67px);
-          }
-        }
-
-        @keyframes brick-move-4 {
-          from, 30%, 62%, to {
-            transform: translate(0, -47px);
-          }
-          34% {
-            transform: translate(0, -87px);
-          }
-          38% {
-            transform: translate(-35px, -87px);
-          }
-          42%, 50% {
-            transform: translate(-35px, -67px);
-          }
-          54% {
-            transform: translate(-35px, -107px);
-          }
-          58% {
-            transform: translate(0, -67px);
-          }
+        
+        @keyframes dots {
+          0%, 20% { content: '.'; }
+          40% { content: '..'; }
+          60%, 100% { content: '...'; }
         }
       `}</style>
     </div>
   );
 }
+
